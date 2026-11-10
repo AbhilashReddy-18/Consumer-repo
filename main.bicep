@@ -68,5 +68,29 @@ module storageModule 'br:nimbusbicepacr123.azurecr.io/bicep/modules/storage1:v1'
   }
 }
 
+param WebAppName string
+
+param appservicePlanName string
+
+param skuplan object
+
+module appServiceModule 'br:nimbusbicepacr123.azurecr.io/bicep/modules/appservice:v1' = {
+  name: 'appServiceModule'
+  params: {
+    WebAppName: WebAppName
+    location: location
+    skuplan: skuplan
+    appservicePlanName: appservicePlanName
+    tags: tags
+  }
+}
+
+//outputs
+
+output webAppName string = WebAppName
+
+output appServicePlanName string = appservicePlanName
+
+
 output keyVaultName string = keyVaultName
 output storageAccountName string = storageAccountName

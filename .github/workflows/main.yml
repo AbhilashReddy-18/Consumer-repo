@@ -1,0 +1,60 @@
+name: Deploy Infrastructure
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - uat
+          - prod
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    env:
+      RESOURCE_GROUP: dev-ResourceGroup
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Azure LoginV1
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+
+      - name: Install Bicep
+        run: az bicep install
+
+      - name: Restore ACR Modules
+        run: az bicep restore --file main.bicep
+
+      - name: Validate Template
+        run: |
+          az deployment group validate \
+            --resource-group $RESOURCE_GROUP \
+            --parameters dev.bicepparam
+
+      - name: What If
+        run: |
+          az deployment group what-if \
+            --resource-group $RESOURCE_GROUP \
+            --parameters dev.bicepparam
+
+      - name: Deploy
+        run: |
+          az deployment group create \
+            --name consumer-${{ github.run_number }} \
+            --resource-group $RESOURCE_GROUP \
+            --parameters dev.bicepparam

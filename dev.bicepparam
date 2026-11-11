@@ -20,12 +20,14 @@ param skuName = 'Standard_LRS'
 
 
 param skuplan = {
-    name: 'B1'
-    tier: 'Basic'
+    name: 'F1'
+    tier: 'Free'
   }
 
 
   param appservicePlanName = '${projectName}${env}appserviceplan'
 
   param WebAppName = '${projectName}${env}webapp'
+
+  param appServiceLocation = 'West US 3'
 

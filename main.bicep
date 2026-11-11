@@ -74,11 +74,13 @@ param appservicePlanName string
 
 param skuplan object
 
+param appServiceLocation string
+
 module appServiceModule 'br:nimbusbicepacr123.azurecr.io/bicep/modules/appservice:v1' = {
   name: 'appServiceModule'
   params: {
     WebAppName: WebAppName
-    location: location
+    location: appServiceLocation
     skuplan: skuplan
     appservicePlanName: appservicePlanName
     tags: tags
